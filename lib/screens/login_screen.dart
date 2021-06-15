@@ -221,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSocialBtnsRow() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30),
+      padding: const EdgeInsets.symmetric(vertical: 40),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
