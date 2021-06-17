@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:loggin_screen/screens/registration_screen.dart';
+import 'package:loggin_screen/screens/login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class Registeration extends StatefulWidget {
+  const Registeration({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterationState createState() => _RegisterationState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterationState extends State<Registeration> {
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
   bool _rememberMe = false;
@@ -118,6 +118,55 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _buildConfirmPasswordTextField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Confirm Password',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+              color: Color(0xFF6CA8F1),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6.0,
+                  offset: Offset(0, 2),
+                )
+              ]),
+          height: 60.0,
+          child: TextField(
+            controller: passwordController,
+            obscureText: true,
+            keyboardType: TextInputType.visiblePassword,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14.0),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Colors.white,
+                ),
+                hintText: 'Enter your Password',
+                hintStyle: TextStyle(
+                  color: Colors.white54,
+                )),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildForgotPassword() {
     return Container(
       alignment: Alignment.centerRight,
@@ -157,13 +206,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildRegisterButton() {
     return Container(
       width: double.infinity,
       // padding: EdgeInsets.symmetric(vertical: 25.0),
       child: ElevatedButton(
         child: Text(
-          "Login",
+          "Sign Up",
           style: TextStyle(
             color: Color(0xFF527DAA),
             fontSize: 18.5,
@@ -201,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
           height: 20.0,
         ),
         Text(
-          'Sign in with',
+          'Sign Up with',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15.5),
         )
@@ -250,12 +299,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildRegisterTextButton() {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, "/register");
+        Navigator.pop(context);
       },
       child: RichText(
         text: TextSpan(children: [
           TextSpan(
-            text: 'Don\'t have account? ',
+            text: 'Already have account? ',
             style: TextStyle(
               color: Colors.white,
               fontSize: 15.5,
@@ -263,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           TextSpan(
-              text: 'Register',
+              text: 'Login',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 15.5,
@@ -311,7 +360,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Login',
+                        'Sign Up',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
@@ -328,11 +377,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       _buildpasswordTextField(),
                       SizedBox(
+                        height: 30.0,
+                      ),
+                      _buildConfirmPasswordTextField(),
+                      SizedBox(
                         height: 10.0,
                       ),
                       _buildForgotPassword(),
                       _buildrememberMeCheckBox(),
-                      _buildLoginButton(),
+                      _buildRegisterButton(),
                       _buildSignInWithText(),
                       _buildSocialBtnsRow(),
                       _buildRegisterTextButton(),
