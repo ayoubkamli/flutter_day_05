@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loggin_screen/screens/registration_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -182,6 +186,9 @@ class _LoginScreenState extends State<LoginScreen> {
           print(loginController.text);
           print(passwordController.text);
           print(_rememberMe);
+          String email = loginController.text;
+          String password = passwordController.text;
+          loginUser(email, password);
         },
       ),
     );
@@ -272,6 +279,47 @@ class _LoginScreenState extends State<LoginScreen> {
         ]),
       ),
     );
+  }
+
+  Future<http.Response> loginUser(String username, String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final response =
+        await http.post(Uri.parse('http://10.11.9.2:4004/api/auth/login'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              'email': username,
+              'password': password,
+            }));
+    var data = jsonDecode(response.body);
+
+    print('data----> $data');
+    // if (response.statusCode == 200) {
+    //   print("response ----> ${data}");
+    //   Navigator.pushNamed(context, '/home');
+    // } else {
+    //   print("response ----> ${data}");
+    //   Navigator.pushNamed(context, '/verfication');
+    // }
+    print('sts==== ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      print("200----> ${data["data"]["isVerified"]}");
+      if (data["data"]["isVerified"]) {
+        String token = data["data"]["token"];
+        prefs.setString('Token', token);
+        Navigator.pushNamed(context, '/home');
+      } else {
+        String token = data["data"]["mailConfToken"];
+        prefs.setString('Token', token);
+        Navigator.pushNamed(context, '/verfication');
+      }
+    } else {
+      print("Password or email not correct");
+    }
+    print(data);
+    return response;
   }
 
   @override

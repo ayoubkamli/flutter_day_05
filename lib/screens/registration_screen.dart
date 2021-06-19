@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:loggin_screen/screens/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:http/http.dart' as http;
 
 class Registeration extends StatefulWidget {
   const Registeration({Key? key}) : super(key: key);
@@ -13,6 +17,7 @@ class Registeration extends StatefulWidget {
 class _RegisterationState extends State<Registeration> {
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmationPasswordController = TextEditingController();
   bool _rememberMe = false;
 
   @override
@@ -146,7 +151,7 @@ class _RegisterationState extends State<Registeration> {
               ]),
           height: 60.0,
           child: TextField(
-            controller: passwordController,
+            controller: confirmationPasswordController,
             obscureText: true,
             keyboardType: TextInputType.visiblePassword,
             style: TextStyle(color: Colors.white),
@@ -228,8 +233,15 @@ class _RegisterationState extends State<Registeration> {
           ),
         ),
         onPressed: () {
-          print(loginController.text);
-          print(passwordController.text);
+          String username = loginController.text;
+          String password = passwordController.text;
+          String confirmPassword = confirmationPasswordController.text;
+          if (confirmPassword != password) {
+            print("confirm password does not match");
+          }
+          createUser(username, password);
+          print('email' + username);
+          print('password' + password);
           print(_rememberMe);
         },
       ),
@@ -321,6 +333,34 @@ class _RegisterationState extends State<Registeration> {
         ]),
       ),
     );
+  }
+
+  Future<http.Response> createUser(String username, String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final response =
+        await http.post(Uri.parse('http://10.11.9.2:4004/api/auth/register'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              'email': username,
+              'password': password,
+            }));
+    if (response.statusCode == 201) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      String token = data["data"]["mailConfToken"];
+      prefs.setString('Token', token);
+
+      print('token is ${data["data"]["token"]}');
+
+      print('confirmation code is ${data["data"]["mailConfCode"]}');
+      //prefs.setString('Toekn', response.body);
+      Navigator.pushNamed(context, '/verfication');
+    } else {
+      print(Exception('faild'));
+    }
+
+    return response;
   }
 
   @override
