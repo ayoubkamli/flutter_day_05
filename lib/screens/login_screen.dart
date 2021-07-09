@@ -284,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<http.Response> loginUser(String username, String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final response =
-        await http.post(Uri.parse('http://10.11.9.2:4004/api/auth/login'),
+        await http.post(Uri.parse('http://10.12.8.14:4004/api/auth/login'),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },

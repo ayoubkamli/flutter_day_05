@@ -113,7 +113,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     String? token = prefs.getString('Token');
     String bearerToken = 'Bearer $token';
     final response = await http.post(
-        Uri.parse('http://10.11.9.2:4004/api/user/email/confirm'),
+        Uri.parse('http://10.12.8.14:4004/api/user/email/confirm'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': '$bearerToken',
